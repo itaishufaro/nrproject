@@ -175,10 +175,9 @@ class QEarlyAgent(IncrementalAgent):
         else:
             b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
                  + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
-        if b is np.nan:
+        if b == np.nan:
             b = 0
-        print(etan, self.Q_R[h, state, action], reward, self.V[h+1, next_state],
-              self.V_R[h+1, next_state], self.mu_ref[h, state, action], b)
+        print(self.Q_R[h, state, action], self.V[h+1, next_state], b)
         self.Q_R[h, state, action] = (1 - etan) * self.Q_R[h, state, action] + etan * (
                 reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] +
                 self.mu_ref[h, state, action] + b)
