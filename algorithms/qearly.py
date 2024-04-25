@@ -110,7 +110,7 @@ class QEarlyAgent(IncrementalAgent):
         if n == 0:
             Bh_next = H
         else:
-            Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
+            Bh_next = self.bonus_scale_factor * np.sqrt(1/n) * (
                 np.sqrt(np.abs(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2))
                 + np.sqrt(H) * np.sqrt(np.abs(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2))
             )
@@ -143,7 +143,7 @@ class QEarlyAgent(IncrementalAgent):
         if n == 0:
             b = np.inf
         else:
-            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            b = self.bonus_scale_factor * np.sqrt((H ** 3) * 1 / n)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
                 reward + self.V_lcb[h + 1, next_state] - b)
 
@@ -157,7 +157,7 @@ class QEarlyAgent(IncrementalAgent):
         if n == 0:
             b = np.inf
         else:
-            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            b = self.bonus_scale_factor * np.sqrt((H ** 3) * 1 / n)
         self.Q_lcb[h, state, action] = (1 - etan) * self.Q_lcb[h, state, action] + etan * (
                 reward + self.V_lcb[h + 1, next_state] + b)
 
