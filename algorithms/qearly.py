@@ -95,7 +95,7 @@ class QEarlyAgent(IncrementalAgent):
         self.sigma_adv = np.zeros((H, S, A))
         self.delta_R = np.zeros((H, S, A))
         self.B_R = np.zeros((H, S, A))
-        self.u_ref = np.ones((H, S, A))
+        self.u_ref = np.ones((S,1))
 
 
         # default writer
@@ -198,9 +198,9 @@ class QEarlyAgent(IncrementalAgent):
         ]))
         if self.V[hh, state] - self.V_lcb[hh, state] > 1:
             self.V_R[hh, state] = self.V[hh, state]
-        elif self.u_ref[hh, state, action] == 1:
+        elif self.u_ref[state] == 1:
             self.V_R[hh, state] = self.V[hh, state]
-            self.u_ref = 0
+            self.u_ref[state] = 0
 
     def _run_episode(self):
         # interact for H steps
