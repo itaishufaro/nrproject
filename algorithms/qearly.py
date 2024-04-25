@@ -83,7 +83,7 @@ class QEarlyAgent(IncrementalAgent):
         self.V_R = np.zeros((H+1, S)) + H
         self.V_R[:-1, :] = H
         self.Q_lcb = np.zeros((H, S, A))
-        self.V_lcb = np.zeros((H, S))
+        self.V_lcb = np.zeros((H+1, S))
 
         # Counter
         self.N = np.zeros((H, S, A))
