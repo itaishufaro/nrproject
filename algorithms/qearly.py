@@ -145,7 +145,10 @@ class QEarlyAgent(IncrementalAgent):
         T = self.episode
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
-        b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+        if n == 0:
+            b = np.inf
+        else:
+            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_lcb[h, state, action] = (1 - etan) * self.Q_lcb[h, state, action] + etan * (
                 reward + self.V_lcb[h + 1, next_state] + b)
 
@@ -171,18 +174,8 @@ class QEarlyAgent(IncrementalAgent):
         """ Sampling policy. """
         return self.Q[hh, state, :].argmax()
 
-    def _compute_bonus(self, n, hh):
-        H = self.horizon
-        S = self.env.observation_space.n
-        A = self.env.action_space.n
-        bonus = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * hh / self.p) / n)
-        return bonus
-
     def _update(self, state, action, next_state, reward, hh):
-        H = self.horizon
         self.N[hh, state, action] += 1
-        n = self.N[hh, state, action]
-        etan = (H+1)/(H+n)
         self.update_ucb_q(hh, state, action, next_state, reward)
         self.update_lcb_q(hh, state, action, next_state, reward)
         self.update_ucb_q_advantage(hh, state, action, next_state, reward)
