@@ -77,7 +77,6 @@ class QEarlyAgent(IncrementalAgent):
         # Q values
         self.Q = np.zeros((H, S, A)) + H
         self.Q_ucb = np.zeros((H, S, A)) + H
-        print(self.Q_ucb)
         self.Q_R = np.zeros((H, S, A)) + H
         self.V = np.zeros((H+1, S))
         self.V[:-1, :] = H
@@ -138,13 +137,13 @@ class QEarlyAgent(IncrementalAgent):
         A = self.env.action_space.n
         T = self.episode + 1
         n = self.N[h, state, action]
-        etan = (H+1)/(H+n)
+        etan = (H + 1) / (H + n)
         if n == 0:
             b = np.inf
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
-                reward + self.V[h+1, next_state] + b)
+                reward + self.V_lcb[h + 1, next_state] - b)
 
     def update_lcb_q(self, h, state, action, next_state, reward):
         H = self.horizon
@@ -191,6 +190,9 @@ class QEarlyAgent(IncrementalAgent):
         self.update_ucb_q(hh, state, action, next_state, reward)
         self.update_lcb_q(hh, state, action, next_state, reward)
         self.update_ucb_q_advantage(hh, state, action, next_state, reward)
+        print(self.Q_ucb[hh, state, action],
+            self.Q_lcb[hh, state, action],
+            self.Q_R[hh, state, action])
         self.Q[hh, state, action] = np.min(np.array([
             self.Q_ucb[hh, state, action],
             self.Q_lcb[hh, state, action],
