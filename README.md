@@ -27,3 +27,5 @@ $ pip install pyyaml
 $ python run.py config/experiment.yaml --n_fit=8
 $ python plot.py
 ```
+
+Original repository: https://github.com/omardrwch/ucbmq_code
