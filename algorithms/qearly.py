@@ -162,9 +162,10 @@ class QEarlyAgent(IncrementalAgent):
         self.update_moments(h, state, action, next_state)
         self.update_bonus(h, state, action, self.episode)
         b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
-             + self.bonus_scale_factor * (np.power(H,2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
+             + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
         self.Q_R[h, state, action] = (1 - etan) * self.Q_R[h, state, action] + etan * (
-                reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] + self.mu_ref[h, state, action] + b)
+                reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] +
+                self.mu_ref[h, state, action] + b)
 
     def policy(self, state, hh=0, **kwargs):
         """ Recommended policy. """
@@ -172,6 +173,7 @@ class QEarlyAgent(IncrementalAgent):
 
     def _get_action(self, state, hh=0):
         """ Sampling policy. """
+        print(self.Q[hh, state, :])
         return self.Q[hh, state, :].argmax()
 
     def _update(self, state, action, next_state, reward, hh):
@@ -200,7 +202,6 @@ class QEarlyAgent(IncrementalAgent):
         # interact for H steps
         episode_rewards = 0
         state = self.env.reset()
-        N0 = self.N.sum()
         for hh in range(self.horizon):
             action = self._get_action(state, hh)
             next_state, reward, done, _ = self.env.step(action)
@@ -223,7 +224,7 @@ class QEarlyAgent(IncrementalAgent):
         if self.writer is not None:
             self.writer.add_scalar("ep reward", episode_rewards, self.episode)
             self.writer.add_scalar("total reward", self._rewards[:ep].sum(), self.episode)
-            self.writer.add_scalar("n_visited_states", np.sum(self.N) - N0, self.episode)
+            self.writer.add_scalar("n_visited_states", self.counter.get_n_visited_states(), self.episode)
 
         # return sum of rewards collected in the episode
         return episode_rewards
