@@ -191,6 +191,7 @@ class QEarlyAgent(IncrementalAgent):
         ]))
         if self.V[hh, state] - self.V_lcb[hh, state] > 1:
             self.V_R[hh, state] = self.V[hh, state]
+            self.u_ref[state] = 1
         elif self.u_ref[state] == 1:
             self.V_R[hh, state] = self.V[hh, state]
             self.u_ref[state] = 0
