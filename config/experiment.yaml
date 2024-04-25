@@ -10,3 +10,4 @@ agents:
   - config/agents/ucbvi.yaml
   - config/agents/ucbvi_rtdp.yaml
   - config/agents/optql.yaml
+  - config/agents/qearly.yaml
