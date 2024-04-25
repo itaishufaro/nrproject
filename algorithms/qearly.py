@@ -111,8 +111,8 @@ class QEarlyAgent(IncrementalAgent):
             Bh_next = H
         else:
             Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
-                np.sqrt(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2)
-                + np.sqrt(H) * np.sqrt(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2)
+                np.sqrt(np.abs(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2))
+                + np.sqrt(H) * np.sqrt(np.abs(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2))
             )
         self.delta_R[h, state, action] = Bh_next - self.B_R[h, state, action]
         self.B_R[h, state, action] = Bh_next
