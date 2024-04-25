@@ -108,7 +108,7 @@ class QEarlyAgent(IncrementalAgent):
         A = self.env.action_space.n
         n = self.N[h, state, action]
         if n == 0:
-            Bh_next = np.inf
+            Bh_next = H
         else:
             Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
                 np.sqrt(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2)
@@ -138,7 +138,7 @@ class QEarlyAgent(IncrementalAgent):
         n = self.N[h, state, action]
         etan = (H+1)/(H+n)
         if n == 0:
-            b = np.inf
+            b = H
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
@@ -152,7 +152,7 @@ class QEarlyAgent(IncrementalAgent):
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
         if n == 0:
-            b = np.inf
+            b = H
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_lcb[h, state, action] = (1 - etan) * self.Q_lcb[h, state, action] + etan * (
@@ -168,7 +168,7 @@ class QEarlyAgent(IncrementalAgent):
         self.update_moments(h, state, action, next_state)
         self.update_bonus(h, state, action, self.episode)
         if n == 0:
-            b = np.inf
+            b = H
         else:
             b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
                  + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
@@ -182,7 +182,7 @@ class QEarlyAgent(IncrementalAgent):
 
     def _get_action(self, state, hh=0):
         """ Sampling policy. """
-        print(self.Q[hh, state, :])
+        # print(self.Q[hh, state, :])
         return self.Q[hh, state, :].argmax()
 
     def _update(self, state, action, next_state, reward, hh):
@@ -190,6 +190,9 @@ class QEarlyAgent(IncrementalAgent):
         self.update_ucb_q(hh, state, action, next_state, reward)
         self.update_lcb_q(hh, state, action, next_state, reward)
         self.update_ucb_q_advantage(hh, state, action, next_state, reward)
+        print(self.Q_ucb[hh, state, action],
+            self.Q_lcb[hh, state, action],
+            self.Q_R[hh, state, action])
         self.Q[hh, state, action] = np.min(np.array([
             self.Q_ucb[hh, state, action],
             self.Q_lcb[hh, state, action],
