@@ -183,6 +183,7 @@ class QEarlyAgent(IncrementalAgent):
 
     def _get_action(self, state, hh=0):
         """ Sampling policy. """
+        print(self.Q[hh, state, :])
         return self.Q[hh, state, :].argmax()
 
     def _update(self, state, action, next_state, reward, hh):
