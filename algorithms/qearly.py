@@ -37,7 +37,7 @@ class QEarlyAgent(IncrementalAgent):
                  n_episodes=1000,
                  horizon=100,
                  bonus_scale_factor=1.0,
-                 p=0.001,
+                 p=1.0,
                  debug=False,
                  **kwargs):
         # init base class
