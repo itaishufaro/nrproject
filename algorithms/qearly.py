@@ -173,12 +173,13 @@ class QEarlyAgent(IncrementalAgent):
         self.update_moments(h, state, action, next_state)
         self.update_bonus(h, state, action, self.episode)
         if n == 0:
-            b = H
+            b = H - h + 1
         else:
-            b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
-                 + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
-        if np.isnan(b):
-            b = 0
+            # b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
+            #      + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
+            b = min(np.sqrt(1 / n) + (H - h + 1) / n, H - h + 1)
+        # if np.isnan(b):
+        #     b = 0
         # print(self.Q_R[h, state, action], self.V[h+1, next_state], b)
         self.Q_R[h, state, action] = (1 - etan) * self.Q_R[h, state, action] + etan * (
                 reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] +
