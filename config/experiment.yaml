@@ -2,7 +2,7 @@ description: 'UCBMQ / UCBVI / OptQL'
 seed: 42
 global_init_kwargs:
   n_episodes: 50000
-  horizon: 10
+  horizon: 25
 train_env: 'config/env_gridworld.yaml'
 eval_env: 'config/env_gridworld.yaml'
 agents:
