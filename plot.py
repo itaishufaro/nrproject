@@ -22,6 +22,7 @@ PLOT_TITLES = {
     'ucbmq': 'UCBMQ',
     'ucbvi': 'UCBVI',
     'ucbvi_rtdp': 'Greedy-UCBVI',
+    'qearly': 'Q-Early',
 }
 
 output_data = load_experiment_results('results', EXPERIMENT_NAME)
