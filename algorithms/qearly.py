@@ -157,7 +157,7 @@ class QEarlyAgent(IncrementalAgent):
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_lcb[h, state, action] = (1 - etan) * self.Q_lcb[h, state, action] + etan * (
-                reward + self.V_lcb[h + 1, next_state] - b)
+                reward + self.V_lcb[h + 1, next_state] + b)
 
     def update_ucb_q_advantage(self, h, state, action, next_state, reward):
         H = self.horizon
