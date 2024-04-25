@@ -30,7 +30,7 @@ class QEarlyAgent(IncrementalAgent):
         Type of exploration bonus. Currently, only "simplified_bernstein"
         is implemented.
     """
-    name = "UCBMQ"
+    name = "QEarly"
 
     def __init__(self,
                  env,
