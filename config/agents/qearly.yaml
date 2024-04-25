@@ -1,4 +1,4 @@
 agent_class: 'algorithms.qearly.QEarlyAgent'
 init_kwargs:
-  bonus_scale_factor: 1000.0
+  bonus_scale_factor: 10000000.0
   p: 0.01
