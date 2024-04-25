@@ -141,9 +141,10 @@ class QEarlyAgent(IncrementalAgent):
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
         if n == 0:
-            b = np.inf
+            b = H - h + 1
         else:
-            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            # b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            b = min(np.sqrt(1/n) + (H - h + 1) / n, H - h + 1)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
                 reward + self.V_lcb[h + 1, next_state] - b)
 
@@ -155,9 +156,10 @@ class QEarlyAgent(IncrementalAgent):
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
         if n == 0:
-            b = np.inf
+            b = H - h + 1
         else:
-            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            # b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+            b = min(np.sqrt(1 / n) + (H - h + 1) / n, H - h + 1)
         self.Q_lcb[h, state, action] = (1 - etan) * self.Q_lcb[h, state, action] + etan * (
                 reward + self.V_lcb[h + 1, next_state] + b)
 
