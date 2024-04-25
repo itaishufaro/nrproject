@@ -114,6 +114,7 @@ class QEarlyAgent(IncrementalAgent):
                 np.sqrt(np.abs(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2))
                 + np.sqrt(H) * np.sqrt(np.abs(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2))
             )
+        print(Bh_next, self.B_R[h, state, action])
         self.delta_R[h, state, action] = Bh_next - self.B_R[h, state, action]
         self.B_R[h, state, action] = Bh_next
 
@@ -173,7 +174,7 @@ class QEarlyAgent(IncrementalAgent):
         else:
             b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
                  + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
-        print(self.V[h+1, next_state], b)
+        # print(self.V[h+1, next_state], b)
         self.Q_R[h, state, action] = (1 - etan) * self.Q_R[h, state, action] + etan * (
                 reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] +
                 self.mu_ref[h, state, action] + b)
