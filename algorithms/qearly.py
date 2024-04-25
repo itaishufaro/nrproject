@@ -107,10 +107,13 @@ class QEarlyAgent(IncrementalAgent):
         S = self.env.observation_space.n
         A = self.env.action_space.n
         n = self.N[h, state, action]
-        Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
-            np.sqrt(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2)
-            + np.sqrt(H) * np.sqrt(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2)
-        )
+        if n == 0:
+            Bh_next = np.inf
+        else:
+            Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
+                np.sqrt(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2)
+                + np.sqrt(H) * np.sqrt(self.sigma_adv[h, state, action] - (self.mu_adv[h, state, action]) ** 2)
+            )
         self.delta_R[h, state, action] = Bh_next - self.B_R[h, state, action]
         self.B_R[h, state, action] = Bh_next
 
@@ -134,7 +137,10 @@ class QEarlyAgent(IncrementalAgent):
         T = self.episode
         n = self.N[h, state, action]
         etan = (H+1)/(H+n)
-        b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+        if n == 0:
+            b = np.inf
+        else:
+            b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
                 reward + self.V[h+1, next_state] + b)
 
@@ -161,8 +167,11 @@ class QEarlyAgent(IncrementalAgent):
         etan = (H + 1) / (H + n)
         self.update_moments(h, state, action, next_state)
         self.update_bonus(h, state, action, self.episode)
-        b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
-             + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
+        if n == 0:
+            b = np.inf
+        else:
+            b = (self.B_R[h, state, action] + (1-etan) * self.delta_R[h, state, action] / etan
+                 + self.bonus_scale_factor * (np.power(H, 2) * np.log(S*A*T/self.p))/(np.power(n, 0.75)))
         self.Q_R[h, state, action] = (1 - etan) * self.Q_R[h, state, action] + etan * (
                 reward + self.V[h + 1, next_state] - self.V_R[h+1, next_state] +
                 self.mu_ref[h, state, action] + b)
