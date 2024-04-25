@@ -141,6 +141,7 @@ class QEarlyAgent(IncrementalAgent):
             b = H
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
+        print(b)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
                 reward + self.V[h+1, next_state] + b)
 
@@ -182,7 +183,6 @@ class QEarlyAgent(IncrementalAgent):
 
     def _get_action(self, state, hh=0):
         """ Sampling policy. """
-        # print(self.Q[hh, state, :])
         return self.Q[hh, state, :].argmax()
 
     def _update(self, state, action, next_state, reward, hh):
@@ -190,9 +190,6 @@ class QEarlyAgent(IncrementalAgent):
         self.update_ucb_q(hh, state, action, next_state, reward)
         self.update_lcb_q(hh, state, action, next_state, reward)
         self.update_ucb_q_advantage(hh, state, action, next_state, reward)
-        print(self.Q_ucb[hh, state, action],
-            self.Q_lcb[hh, state, action],
-            self.Q_R[hh, state, action])
         self.Q[hh, state, action] = np.min(np.array([
             self.Q_ucb[hh, state, action],
             self.Q_lcb[hh, state, action],
