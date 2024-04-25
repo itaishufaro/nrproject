@@ -121,14 +121,15 @@ class QEarlyAgent(IncrementalAgent):
         H = self.horizon
         n = self.N[h, state, action]
         etan = (H+1)/(H+n)
-        self.mu_ref[h, state, action] = ((1 - 1/n)*self.mu_ref[h, state, action]
-                                         + 1/n * self.V_R[h+1, next_state])
-        self.sigma_ref[h, state, action] = ((1 - 1/n)*self.sigma_ref[h, state, action]
-                                            + 1/n * (self.V_R[h+1, next_state]) ** 2)
-        self.mu_adv[h, state, action] = ((1-etan) * self.mu_adv[h, state, action] +
-                                         etan * (self.V[h+1, next_state] - self.V_R[h+1, next_state]))
-        self.sigma_adv[h, state, action] = ((1-etan) * self.sigma_adv[h, state, action] +
-                                              etan * (self.V[h+1, next_state] - self.V_R[h+1, next_state]) ** 2)
+        if n != 0:
+            self.mu_ref[h, state, action] = ((1 - 1/n)*self.mu_ref[h, state, action]
+                                             + 1/n * self.V_R[h+1, next_state])
+            self.sigma_ref[h, state, action] = ((1 - 1/n)*self.sigma_ref[h, state, action]
+                                                + 1/n * (self.V_R[h+1, next_state]) ** 2)
+            self.mu_adv[h, state, action] = ((1-etan) * self.mu_adv[h, state, action] +
+                                             etan * (self.V[h+1, next_state] - self.V_R[h+1, next_state]))
+            self.sigma_adv[h, state, action] = ((1-etan) * self.sigma_adv[h, state, action] +
+                                                  etan * (self.V[h+1, next_state] - self.V_R[h+1, next_state]) ** 2)
 
     def update_ucb_q(self, h, state, action, next_state, reward):
         H = self.horizon
@@ -141,7 +142,6 @@ class QEarlyAgent(IncrementalAgent):
             b = H
         else:
             b = self.bonus_scale_factor * np.sqrt((H ** 3) * np.log(S * A * T / self.p) / n)
-        print(b)
         self.Q_ucb[h, state, action] = (1 - etan) * self.Q_ucb[h, state, action] + etan * (
                 reward + self.V[h+1, next_state] + b)
 
