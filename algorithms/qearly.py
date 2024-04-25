@@ -108,7 +108,7 @@ class QEarlyAgent(IncrementalAgent):
         A = self.env.action_space.n
         n = self.N[h, state, action]
         if n == 0:
-            Bh_next = np.inf
+            Bh_next = H
         else:
             Bh_next = self.bonus_scale_factor * np.sqrt(np.log((S*A*T / self.p))/n) * (
                 np.sqrt(np.abs(self.sigma_ref[h, state, action] - (self.mu_ref[h, state, action]) ** 2))
