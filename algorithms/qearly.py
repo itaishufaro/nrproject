@@ -193,7 +193,7 @@ class QEarlyAgent(IncrementalAgent):
         ]))
         self.V[hh, state] = np.max(self.Q[hh, state, :])
         self.V_lcb[hh, state] = np.max(np.array([
-            np.max(self.Q_lcb[hh, state, :]),
+            np.max(np.squeeze(self.Q_lcb[hh, state, :])),
             self.V_lcb[hh, :]
         ]))
         if self.V[hh, state] - self.V_lcb[hh, state] > 1:
