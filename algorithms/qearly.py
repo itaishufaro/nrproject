@@ -200,6 +200,7 @@ class QEarlyAgent(IncrementalAgent):
         # interact for H steps
         episode_rewards = 0
         state = self.env.reset()
+        N0 = self.N.sum()
         for hh in range(self.horizon):
             action = self._get_action(state, hh)
             next_state, reward, done, _ = self.env.step(action)
@@ -222,7 +223,7 @@ class QEarlyAgent(IncrementalAgent):
         if self.writer is not None:
             self.writer.add_scalar("ep reward", episode_rewards, self.episode)
             self.writer.add_scalar("total reward", self._rewards[:ep].sum(), self.episode)
-            self.writer.add_scalar("n_visited_states", np.sum(self.N), self.episode)
+            self.writer.add_scalar("n_visited_states", np.sum(self.N) - N0, self.episode)
 
         # return sum of rewards collected in the episode
         return episode_rewards
