@@ -135,7 +135,7 @@ class QEarlyAgent(IncrementalAgent):
         H = self.horizon
         S = self.env.observation_space.n
         A = self.env.action_space.n
-        T = self.episode
+        T = self.episode + 1
         n = self.N[h, state, action]
         etan = (H+1)/(H+n)
         if n == 0:
@@ -149,7 +149,7 @@ class QEarlyAgent(IncrementalAgent):
         H = self.horizon
         S = self.env.observation_space.n
         A = self.env.action_space.n
-        T = self.episode
+        T = self.episode + 1
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
         if n == 0:
@@ -163,7 +163,7 @@ class QEarlyAgent(IncrementalAgent):
         H = self.horizon
         S = self.env.observation_space.n
         A = self.env.action_space.n
-        T = self.episode
+        T = self.episode + 1
         n = self.N[h, state, action]
         etan = (H + 1) / (H + n)
         self.update_moments(h, state, action, next_state)
